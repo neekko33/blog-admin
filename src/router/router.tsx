@@ -1,19 +1,43 @@
-import { createBrowserRouter } from 'react-router-dom'
+import {createBrowserRouter} from 'react-router-dom'
 import MyLayout from '../layouts/layout'
 import Dashboard from '../pages/dashboard'
+import Category from '../pages/category'
+import Post from '../pages/post'
+import User from '../pages/user'
+import Tag from '../pages/tag'
 
-export const router = createBrowserRouter([
+export const routes = [
   {
     path: '/',
-    element: <MyLayout />,
+    element: <MyLayout/>,
     children: [
       {
-        index: true,
-        element: <Dashboard />
+        path: '/dashboard',
+        name: '控制台',
+        element: <Dashboard/>
       },
       {
-        path: ''
+        path: '/post',
+        name: '文章管理',
+        element: <Post />
+      },
+      {
+        path: '/category',
+        name: '分类管理',
+        element: <Category />
+      },
+      {
+        path: '/tag',
+        name: '标签管理',
+        element: <Tag />
+      },
+      {
+        path: '/user',
+        name: '用户管理',
+        element: <User />
       }
     ]
   }
-])
+]
+
+export const router = createBrowserRouter(routes)
