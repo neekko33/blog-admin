@@ -1,82 +1,73 @@
 import {
-  DashboardOutlined,
-  UserOutlined,
-  FileTextOutlined,
-  TagsOutlined,
+  LeftOutlined,
+  RightOutlined
 } from '@ant-design/icons'
-import {Breadcrumb, Layout, Menu, Avatar} from 'antd'
-import type {MenuProps} from 'antd'
-import {Link, Outlet, useLocation} from 'react-router-dom'
-import {routes} from '../router/router.tsx'
+import {Breadcrumb, Layout, Menu, FloatButton} from 'antd'
+import {Outlet, useLocation} from 'react-router-dom'
 import {useEffect, useState} from 'react'
+import MyHeader from '../components/MyHeader.tsx'
+import {getBreadcrumbs, useMenuItems} from '../router/router.tsx'
 
 const {Header, Content, Footer, Sider} = Layout
 
-type MenuItem = Required<MenuProps>['items'][number]
-interface IBreadCrumb {
-  title: string
-}
-
-const iconMapping: Record<string, JSX.Element> = {
-  '/dashboard': <DashboardOutlined/>,
-  '/post': <FileTextOutlined/>,
-  '/category': <TagsOutlined/>,
-  '/tag': <TagsOutlined/>,
-  '/user': <UserOutlined/>
-}
 
 export default function MyLayout() {
   const location = useLocation()
-  const [breadCrumbItems, setBreadCrumbItems] = useState<IBreadCrumb[]>([])
-  const [collapsed, setCollapsed] = useState(false);
-
+  const [collapsed, setCollapsed] = useState(false)
+  const [breadcrums, setBreadcrums] = useState([{title: '首页'}])
+  const menuItems = useMenuItems()
   const currentPath = location.pathname
-  const menuItems:MenuItem[] = routes[0].children.map(route => {
-    const path = route.path
-    const iconComponent = iconMapping[path] || null
-    return {
-      key: path,
-      icon: iconComponent,
-      label: <Link to={path}>{route.name}</Link>,
-    }
-  })
 
   useEffect(() => {
-    const route = routes[0].children.find(item => item.path === location.pathname)
-    if (route) {
-      setBreadCrumbItems([
-        {title: '主页'},
-        {title: route.name}
-      ])
-    }
-  }, [location])
+    setBreadcrums([
+      {title: '首页'},
+      ...getBreadcrumbs(location.pathname)
+    ])
+  }, [location.pathname])
 
   return (
     <Layout className="w-lvw h-lvh">
-      <Header className="bg-white border-b h-16 flex justify-between items-center">
-        <div></div>
-        <div className="cursor-pointer hover:bg-gray-100 rounded-md h-5/6 flex items-center justify-center px-3">
-          <Avatar icon={<UserOutlined />} />
-          <span className="font-bold pl-3">Admin AdminAdmin</span>
-        </div>
+      <Header className="bg-white border-b h-14 flex justify-between items-center px-5">
+        <MyHeader/>
       </Header>
       <Layout>
         <Sider
+          className="border-r px-3"
           theme="light"
+          trigger={null}
           width={250}
           collapsible
           collapsed={collapsed}
-          onCollapse={(value) => setCollapsed(value)}
+          onCollapse={value => setCollapsed(value)}
         >
+          <FloatButton
+            className="absolute cursor-pointer "
+            shape="circle"
+            style={{top: 15, right: -12.5, height: 25, width: 25}}
+            icon={
+              collapsed ? (
+                <RightOutlined style={{height: 10, width: 10}}/>
+              ) : (
+                <LeftOutlined
+                  className="text-blue"
+                  style={{height: 10, width: 10}}
+                />
+              )
+            }
+            onClick={() => {
+              setCollapsed(!collapsed)
+            }}
+          />
           <Menu
+            style={{borderInlineEnd: 'none'}}
             mode="inline"
             defaultSelectedKeys={[currentPath]}
             items={menuItems}
           />
         </Sider>
         <Layout>
-          <Content style={{margin: '0 16px 0'}}>
-            <Breadcrumb style={{ margin: '16px 0' }} items={breadCrumbItems}/>
+          <Content className="px-5">
+            <Breadcrumb style={{margin: '16px 0'}} items={breadcrums}/>
             <Outlet/>
           </Content>
           <Footer style={{textAlign: 'center'}}>
