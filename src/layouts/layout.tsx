@@ -5,7 +5,7 @@ import {
 import {Breadcrumb, Layout, Menu, FloatButton} from 'antd'
 import {Outlet, useLocation} from 'react-router-dom'
 import {useEffect, useState} from 'react'
-import MyHeader from '../components/MyHeader.tsx'
+import MyHeader from './MyHeader.tsx'
 import {getBreadcrumbs, useMenuItems} from '../router/router.tsx'
 
 const {Header, Content, Footer, Sider} = Layout
@@ -32,7 +32,7 @@ export default function MyLayout() {
       </Header>
       <Layout>
         <Sider
-          className="border-r px-3"
+          className="px-3"
           theme="light"
           trigger={null}
           width={250}

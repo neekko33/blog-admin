@@ -6,7 +6,7 @@ import {
   TagsOutlined
 } from '@ant-design/icons'
 import MyLayout from '../layouts/layout'
-import Post from '../pages/Post'
+import Post from '../pages/Post/Post.tsx'
 import lazyLoad from './lazyLoad'
 import React, {lazy} from 'react'
 import {MenuProps} from 'antd'
@@ -26,7 +26,7 @@ export const routers: MenuRouteObject[] = [
         path: 'dashboard',
         icon: <DashboardOutlined/>,
         label: '控制台',
-        element: lazyLoad(lazy(() => import('../pages/Dashboard')))
+        element: lazyLoad(lazy(() => import('../pages/Dashboard/Dashboard.tsx')))
       },
       {
         path: 'post',
@@ -37,12 +37,12 @@ export const routers: MenuRouteObject[] = [
           {
             path: 'list',
             label: '文章列表',
-            element: lazyLoad(lazy(() => import('../pages/PostList')))
+            element: lazyLoad(lazy(() => import('../pages/Post/PostList.tsx')))
           },
           {
             path: 'edit',
             label: '文章编辑',
-            element: lazyLoad(lazy(() => import('../pages/PostEdit')))
+            element: lazyLoad(lazy(() => import('../pages/Post/PostEdit.tsx')))
           }
         ]
       },
@@ -56,7 +56,7 @@ export const routers: MenuRouteObject[] = [
         path: 'user',
         icon: <UserOutlined/>,
         label: '用户管理',
-        element: lazyLoad(lazy(() => import('../pages/User')))
+        element: lazyLoad(lazy(() => import('../pages/User/User.tsx')))
       }
     ]
   }

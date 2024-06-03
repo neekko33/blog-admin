@@ -1,7 +1,7 @@
 import type { ColumnsType } from 'antd/es/table'
 import { Button, Card, Form, Input, Select, Space, Table, Tag } from 'antd'
-import TableCard from '../components/TableCard.tsx'
-import { PostType, SelectType } from '../index'
+import TableCard from '../../components/TableCard.tsx'
+import { PostType, SelectType } from '../../index'
 
 const columns: ColumnsType<PostType> = [
   {
