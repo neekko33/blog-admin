@@ -1,19 +1,28 @@
-import {Avatar, Dropdown, MenuProps} from 'antd'
+import {Avatar, Dropdown, MenuProps, message} from 'antd'
 import {UserOutlined, LogoutOutlined} from '@ant-design/icons'
-
-const items: MenuProps['items'] = [
-  {
-    key: '1',
-    label: (
-      <div className="flex items-center justify-between">
-        <LogoutOutlined/>
-        <span>退出登陆</span>
-      </div>
-    )
-  }
-]
+import {useAppDispatch} from '../hooks/hooks.ts'
+import {loggedOut} from '../store/slices/authSlice.ts'
+import {useNavigate} from 'react-router-dom'
 
 export default function MyHeader() {
+  const dispatch = useAppDispatch()
+  const navigate = useNavigate()
+  const logout = () => {
+    dispatch(loggedOut())
+    message.success('退出登陆')
+    navigate('/login')
+  }
+  const items: MenuProps['items'] = [
+    {
+      key: '1',
+      label: (
+        <div className="flex items-center justify-between" onClick={logout}>
+          <LogoutOutlined/>
+          <span>退出登陆</span>
+        </div>
+      )
+    }
+  ]
   return (
     <>
       <div className="flex items-center justify-between">

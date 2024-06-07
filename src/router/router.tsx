@@ -5,8 +5,9 @@ import {
   FileTextOutlined,
   TagsOutlined
 } from '@ant-design/icons'
-import MyLayout from '../layouts/layout'
+import MyLayout from '../layouts/Layout.tsx'
 import Post from '../pages/Post/Post.tsx'
+import Login from '../pages/Login/Login.tsx'
 import lazyLoad from './lazyLoad'
 import React, {lazy} from 'react'
 import {MenuProps} from 'antd'
@@ -59,6 +60,10 @@ export const routers: MenuRouteObject[] = [
         element: lazyLoad(lazy(() => import('../pages/User/User.tsx')))
       }
     ]
+  },
+  {
+    path: '/login',
+    element: <Login />
   }
 ]
 
