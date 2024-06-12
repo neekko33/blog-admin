@@ -1,4 +1,4 @@
-import {createBrowserRouter, RouteObject, Link} from 'react-router-dom'
+import {createBrowserRouter, RouteObject, Link, LoaderFunctionArgs, redirect} from 'react-router-dom'
 import {
   DashboardOutlined,
   UserOutlined,
@@ -11,6 +11,17 @@ import Login from '../pages/Login/Login.tsx'
 import lazyLoad from './lazyLoad'
 import React, {lazy} from 'react'
 import {MenuProps} from 'antd'
+import store from '../store/store.ts'
+
+// 未登陆时跳转回登陆页面
+const authLoader = ({request}: LoaderFunctionArgs) => {
+  if (!store.getState().auth.isLogin) {
+    const params = new URLSearchParams()
+    params.set('from', new URL(request.url).pathname)
+    return redirect('/login?' + params.toString())
+  }
+  return null
+}
 
 export declare type MenuRouteObject = {
   icon?: React.ReactNode
@@ -21,6 +32,7 @@ export declare type MenuRouteObject = {
 export const routers: MenuRouteObject[] = [
   {
     path: '/',
+    loader: authLoader,
     element: <MyLayout/>,
     children: [
       {
@@ -63,7 +75,7 @@ export const routers: MenuRouteObject[] = [
   },
   {
     path: '/login',
-    element: <Login />
+    element: <Login/>
   }
 ]
 
