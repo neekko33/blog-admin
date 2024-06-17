@@ -3,21 +3,21 @@ import {RootState} from '../store.ts'
 
 export interface AuthState {
   isLogin?: boolean
-  jwt: string | null
+  jwt: string
+  userId: string
+  username: string
 }
 
-const initialState = () => {
-  const jwt = localStorage.getItem('jwt')
-  if (jwt) {
-    return {
-      isLogin: true,
-      jwt
-    }
-  } else {
-    return {
-      isLogin: false,
-      jwt: null
-    }
+const initialState: () => AuthState = () => {
+  const [jwt, userId, username] = ['jwt', 'userId', 'username'].map(key => {
+    const value = localStorage.getItem(key)
+    return value ? JSON.parse(value) : null
+  })
+  return {
+    isLogin: !!(jwt && userId && username),
+    jwt: jwt ?? '',
+    userId: userId ?? '',
+    username: username ?? ''
   }
 }
 
@@ -25,20 +25,32 @@ export const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    login: (state, action: PayloadAction<string>) => {
+    login: (state, action: PayloadAction<Omit<AuthState, 'isLogin'>>) => {
+      const {jwt, userId, username} = action.payload
       state.isLogin = true
-      state.jwt = action.payload
+      state.jwt = jwt
+      state.userId = userId
+      state.username = username
       localStorage.setItem('jwt', JSON.stringify(state.jwt))
+      localStorage.setItem('userId', JSON.stringify(state.userId))
+      localStorage.setItem('username', JSON.stringify(state.username))
     },
     loggedOut: (state) => {
       state.isLogin = false
       state.jwt = ''
-      localStorage.removeItem('jwt')
+      state.userId = ''
+      state.username = ''
+      const removeItems = ['jwt', 'userId', 'username']
+      removeItems.forEach(key => {
+        localStorage.removeItem(key)
+      })
     }
   }
 })
 
 export const {login, loggedOut} = authSlice.actions
-export const selectLogin = (state:RootState) => state.auth.isLogin
+export const selectLogin = (state: RootState) => state.auth.isLogin
+export const selectUsername = (state: RootState) => state.auth.username
+export const selectUserId = (state: RootState) => state.auth.userId
 
 export default authSlice.reducer

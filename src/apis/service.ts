@@ -1,6 +1,8 @@
 import Axios from 'axios'
 
-const jwt = localStorage.getItem('jwt') || ''
+let jwt = localStorage.getItem('jwt')
+jwt = jwt ? JSON.parse(jwt) : ''
+
 
 const service = Axios.create({
   baseURL: 'http://localhost:3000',// 本地测试服务
@@ -10,7 +12,7 @@ const service = Axios.create({
 service.interceptors.request.use(
   (config) => {
     if (config.url !== '/user/login') {
-      config.headers.Authorization = jwt
+      config.headers.Authorization = 'Bearer ' + jwt
     }
     return config
   },

@@ -1,4 +1,4 @@
-import {createBrowserRouter, RouteObject, Link, LoaderFunctionArgs, redirect} from 'react-router-dom'
+import {createBrowserRouter, RouteObject, Link, LoaderFunctionArgs, redirect, Navigate} from 'react-router-dom'
 import {
   DashboardOutlined,
   UserOutlined,
@@ -10,14 +10,16 @@ import Post from '../pages/Post/Post.tsx'
 import Login from '../pages/Login/Login.tsx'
 import lazyLoad from './lazyLoad'
 import React, {lazy} from 'react'
-import {MenuProps} from 'antd'
+import {MenuProps, message} from 'antd'
+import {selectLogin} from '../store/slices/authSlice.ts'
 import store from '../store/store.ts'
 
 // 未登陆时跳转回登陆页面
-const authLoader = ({request}: LoaderFunctionArgs) => {
-  if (!store.getState().auth.isLogin) {
+function authLoader({request}: LoaderFunctionArgs) {
+  if (!selectLogin(store.getState())) {
     const params = new URLSearchParams()
     params.set('from', new URL(request.url).pathname)
+    message.error('请登陆后重试！')
     return redirect('/login?' + params.toString())
   }
   return null
@@ -35,6 +37,10 @@ export const routers: MenuRouteObject[] = [
     loader: authLoader,
     element: <MyLayout/>,
     children: [
+      {
+        index: true,
+        element: <Navigate to={'/dashboard'}/>
+      },
       {
         path: 'dashboard',
         icon: <DashboardOutlined/>,
@@ -63,7 +69,7 @@ export const routers: MenuRouteObject[] = [
         path: 'category',
         icon: <TagsOutlined/>,
         label: '分类管理',
-        element: lazyLoad(lazy(() => import('../pages/Category')))
+        element: lazyLoad(lazy(() => import('../pages/Category/Category.tsx')))
       },
       {
         path: 'user',

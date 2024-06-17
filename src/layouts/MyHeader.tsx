@@ -3,10 +3,13 @@ import {UserOutlined, LogoutOutlined} from '@ant-design/icons'
 import {useAppDispatch} from '../hooks/hooks.ts'
 import {loggedOut} from '../store/slices/authSlice.ts'
 import {useNavigate} from 'react-router-dom'
+import {selectUsername} from '../store/slices/authSlice.ts'
+import store from '../store/store.ts'
 
 export default function MyHeader() {
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
+  const username = selectUsername(store.getState())
   const logout = () => {
     dispatch(loggedOut())
     message.success('退出登陆')
@@ -33,7 +36,7 @@ export default function MyHeader() {
       <Dropdown menu={{items}}>
         <div className="cursor-pointer hover:bg-gray-100 rounded-md h-5/6 flex items-center justify-center px-3">
           <Avatar icon={<UserOutlined/>}/>
-          <span className="font-bold pl-3">Admin</span>
+          <span className="font-bold pl-3">{username}</span>
         </div>
       </Dropdown>
     </>

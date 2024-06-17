@@ -19,9 +19,13 @@ const Login: React.FC = () => {
 
   const [form] = Form.useForm()
   const handlerSubmit: FormProps<LoginProps>['onFinish'] = async (values) => {
-    const {headers, data: {message}} = await userLogin(values)
+    const {headers, data: {message,data}} = await userLogin(values)
     if (message === 'success') {
-      dispatch(login(headers.token))
+      dispatch(login({
+        jwt: headers.token,
+        userId: data.id?.toString() || '',
+        username: data.name || ''
+      }))
       antdMessage.success('登陆成功')
       navigate('/dashboard')
     } else {

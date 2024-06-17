@@ -16,7 +16,6 @@ export default function MyLayout() {
   const [collapsed, setCollapsed] = useState(false)
   const [breadcrums, setBreadcrums] = useState([{title: '首页'}])
   const menuItems = useMenuItems()
-  const currentPath = location.pathname
 
   useEffect(() => {
     setBreadcrums([
@@ -61,7 +60,8 @@ export default function MyLayout() {
           <Menu
             style={{borderInlineEnd: 'none'}}
             mode="inline"
-            defaultSelectedKeys={[currentPath]}
+            selectedKeys={[location.pathname]}
+            defaultOpenKeys={['/post']}
             items={menuItems}
           />
         </Sider>
