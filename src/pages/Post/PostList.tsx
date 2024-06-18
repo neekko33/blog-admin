@@ -2,13 +2,28 @@ import type {ColumnsType} from 'antd/es/table'
 import {notification, Space, Table, Tag, message as AntdMessage, Popconfirm} from 'antd'
 import TableCard from '../../components/TableCard.tsx'
 import {Post} from '../../index'
-import {getPosts, deletePost} from '../../apis/post.ts'
+import {getPosts, deletePost, publishPost} from '../../apis/post.ts'
 import {useEffect, useState} from 'react'
 import {useNavigate} from 'react-router-dom'
 
 export default function PostList() {
   const [data, setData] = useState<Post[]>()
   const navigate = useNavigate()
+
+  const handlePublish = async (id: string, isPublished: boolean) => {
+    try {
+      const {message} = await publishPost(id, isPublished)
+      if (message === 'success') {
+        AntdMessage.success('删除成功')
+        await initialData()
+      }
+    } catch (e) {
+      notification.error({
+        message: '发布失败',
+        description: (e as object).toString()
+      })
+    }
+  }
 
   const handleDelete = async (id: string) => {
     try {
@@ -99,8 +114,13 @@ export default function PostList() {
       key: 'setting',
       render: (_, record) => (
         <Space size="middle">
+          {
+            record.published ? <a className="text-gray-400 hover:text-gray-600" onClick={() => handlePublish(record.id as string, false)}>隐藏</a> :
+              <a className="text-green-400 hover:text-green-600" onClick={() => handlePublish(record.id as string, true)}>发布</a>
+          }
           <a className="text-sky-500 hover:text-sky-600" onClick={() => navigate(`/post/edit?id=${record.id}`)}>编辑</a>
-          <Popconfirm title="删除文章" description="确认删除该文章么？" onConfirm={() => handleDelete(record.id as string)}
+          <Popconfirm title="删除文章" description="确认删除该文章么？"
+                      onConfirm={() => handleDelete(record.id as string)}
                       okText="确认" cancelText="取消">
             <a className="text-red-500 hover:text-red-600">删除</a>
           </Popconfirm>

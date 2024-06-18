@@ -1,11 +1,11 @@
 import {useEffect, useState} from 'react'
 import MDEditor from '@uiw/react-md-editor'
 import {Button, Card, Form, FormProps, Input, message as antdMessage, notification, Select, Space} from 'antd'
-import {SelectOptions, SelectType} from '../../index'
+import {AxiosResponseData, Post, SelectOptions, SelectType} from '../../index'
 import {UploadOutlined} from '@ant-design/icons'
 import {getCategories} from '../../apis/category.ts'
 import {getTags} from '../../apis/tag.ts'
-import {addPost, getPost} from '../../apis/post.ts'
+import {addPost, getPost, updatePost} from '../../apis/post.ts'
 import store from '../../store/store.ts'
 import {selectUserId} from '../../store/slices/authSlice.ts'
 import {useNavigate, useSearchParams} from 'react-router-dom'
@@ -19,6 +19,8 @@ export default function PostEdit() {
   const [tagOptions, setTagOptions] = useState<SelectOptions[]>([])
   const navigate = useNavigate()
   const [params] = useSearchParams()
+  const postId = params.get('id')
+
 
   type PostFormType = {
     title: string
@@ -33,7 +35,17 @@ export default function PostEdit() {
       tags: values.tags.map(id => ({id}))
     }
     try {
-      const {message} = await addPost({...formData, content, authorId: Number(selectUserId(store.getState()))})
+      let result: AxiosResponseData<Post>
+      if (postId) {
+        result = await updatePost(postId, {
+          ...formData,
+          content,
+          authorId: Number(selectUserId(store.getState()))
+        })
+      } else {
+        result = await addPost({...formData, content, authorId: Number(selectUserId(store.getState()))})
+      }
+      const {message} = result
       if (message === 'success') {
         antdMessage.success('保存成功！')
         navigate('/post/list')
@@ -63,9 +75,8 @@ export default function PostEdit() {
       setTagOptions(tOptions)
     }
     // post edit page
-    const id = params.get('id')
-    if (id) {
-      const {message, data} = await getPost(Number(id))
+    if (postId) {
+      const {message, data} = await getPost(Number(postId))
       if (message === 'success') {
         form.setFieldsValue({
           title: data.title,
