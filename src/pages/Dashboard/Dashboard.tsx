@@ -37,7 +37,6 @@ export default function Dashboard() {
           />
         </Card>
         <Card className="w-2/5" title="近期文章">
-
         </Card>
       </div>
     </>

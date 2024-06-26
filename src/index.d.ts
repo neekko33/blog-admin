@@ -29,6 +29,8 @@ export interface User {
   id?: number,
   email: string,
   name?: string,
+  avatar?: string,
+  intro?: string,
   password?: string,
 }
 
@@ -51,5 +53,10 @@ export interface Tag {
 export interface SelectOptions {
   value: string
   label: string
+}
+
+export interface Password {
+  oldPassword?: string
+  newPassword?: string
 }
 

@@ -52,5 +52,6 @@ export const {login, loggedOut} = authSlice.actions
 export const selectLogin = (state: RootState) => state.auth.isLogin
 export const selectUsername = (state: RootState) => state.auth.username
 export const selectUserId = (state: RootState) => state.auth.userId
+export const selectJwt = (state:RootState) => state.auth.jwt
 
 export default authSlice.reducer

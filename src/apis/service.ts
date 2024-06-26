@@ -1,8 +1,6 @@
 import Axios from 'axios'
-
-let jwt = localStorage.getItem('jwt')
-jwt = jwt ? JSON.parse(jwt) : ''
-
+import store from '../store/store.ts'
+import {selectJwt} from '../store/slices/authSlice.ts'
 
 const service = Axios.create({
   baseURL: 'http://localhost:3000',// 本地测试服务
@@ -12,12 +10,11 @@ const service = Axios.create({
 service.interceptors.request.use(
   (config) => {
     if (config.url !== '/user/login') {
-      config.headers.Authorization = 'Bearer ' + jwt
+      config.headers.Authorization = 'Bearer ' + selectJwt(store.getState())
     }
     return config
   },
   (error) => {
-    console.error(error)
     Promise.reject(error).then()
   }
 )
@@ -30,7 +27,6 @@ service.interceptors.response.use((config) => {
     return config.data
   }
 }, (error) => {
-  console.error(error)
   Promise.reject(error).then()
 })
 

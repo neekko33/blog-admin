@@ -3,7 +3,8 @@ import {
   DashboardOutlined,
   UserOutlined,
   FileTextOutlined,
-  TagsOutlined
+  TagsOutlined,
+  BookOutlined,
 } from '@ant-design/icons'
 import MyLayout from '../layouts/Layout.tsx'
 import Post from '../pages/Post/Post.tsx'
@@ -67,9 +68,15 @@ export const routers: MenuRouteObject[] = [
       },
       {
         path: 'category',
-        icon: <TagsOutlined/>,
+        icon: <BookOutlined />,
         label: '分类管理',
         element: lazyLoad(lazy(() => import('../pages/Category/Category.tsx')))
+      },
+      {
+        path: 'tag',
+        icon: <TagsOutlined/>,
+        label: '标签管理',
+        element: lazyLoad(lazy(() => import('../pages/Tag/Tag.tsx')))
       },
       {
         path: 'user',

@@ -14,12 +14,12 @@ export default function PostList() {
     try {
       const {message} = await publishPost(id, isPublished)
       if (message === 'success') {
-        AntdMessage.success('删除成功')
+        AntdMessage.success('已修改发布状态！')
         await initialData()
       }
     } catch (e) {
       notification.error({
-        message: '发布失败',
+        message: '修改发布状态失败！',
         description: (e as object).toString()
       })
     }
@@ -29,12 +29,12 @@ export default function PostList() {
     try {
       const {message} = await deletePost(id)
       if (message === 'success') {
-        AntdMessage.success('删除成功')
+        AntdMessage.success('删除成功！')
         await initialData()
       }
     } catch (e) {
       notification.error({
-        message: '删除失败',
+        message: '删除失败！',
         description: (e as object).toString()
       })
     }
@@ -61,14 +61,14 @@ export default function PostList() {
       dataIndex: 'title',
       key: 'title'
     },
-    {
-      title: '作者',
-      key: 'author',
-      dataIndex: 'author',
-      render: (_, record) => (
-        <>{record.author?.name}</>
-      )
-    },
+    // {
+    //   title: '作者',
+    //   key: 'author',
+    //   dataIndex: 'author',
+    //   render: (_, record) => (
+    //     <>{record.author?.name}</>
+    //   )
+    // },
     {
       title: '分类',
       dataIndex: 'category',

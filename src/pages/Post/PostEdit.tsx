@@ -1,10 +1,22 @@
-import {useEffect, useState} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import MDEditor from '@uiw/react-md-editor'
-import {Button, Card, Form, FormProps, Input, message as antdMessage, notification, Select, Space} from 'antd'
+import {
+  Button,
+  Card,
+  Form,
+  FormProps,
+  Input,
+  message as antdMessage,
+  notification,
+  Select,
+  Space,
+  Divider,
+  InputRef
+} from 'antd'
 import {AxiosResponseData, Post, SelectOptions, SelectType} from '../../index'
-import {UploadOutlined} from '@ant-design/icons'
+import {UploadOutlined, PlusOutlined} from '@ant-design/icons'
 import {getCategories} from '../../apis/category.ts'
-import {getTags} from '../../apis/tag.ts'
+import {addTag, getTags} from '../../apis/tag.ts'
 import {addPost, getPost, updatePost} from '../../apis/post.ts'
 import store from '../../store/store.ts'
 import {selectUserId} from '../../store/slices/authSlice.ts'
@@ -15,6 +27,8 @@ export default function PostEdit() {
   const [form] = useForm<PostFormType>()
   const [content, setContent] = useState('')
   const [fileName, setFileName] = useState('')
+  const [name, setName] = useState('')
+  const inputRef = useRef<InputRef>(null)
   const [categoryOptions, setCategoryOptions] = useState<SelectOptions[]>([])
   const [tagOptions, setTagOptions] = useState<SelectOptions[]>([])
   const navigate = useNavigate()
@@ -26,6 +40,30 @@ export default function PostEdit() {
     title: string
     categoryId: string
     tags: string[]
+  }
+
+  const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setName(event.target.value)
+  }
+
+  const addItem = async (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
+    e.preventDefault()
+    try {
+      const {message, data} = await addTag({name})
+      if (message === 'success') {
+        const tOptions: SelectOptions[] = data.map(t => ({label: t.name as string, value: t.id as string}))
+        setTagOptions(tOptions)
+        setName('')
+        setTimeout(() => {
+          inputRef.current?.focus()
+        }, 0)
+      }
+    } catch (e) {
+      notification.error({
+        message: '添加失败',
+        description: (e as object).toString()
+      })
+    }
   }
 
   const onFinish: FormProps<PostFormType>['onFinish'] = async (values) => {
@@ -142,7 +180,24 @@ export default function PostEdit() {
             name="tags"
             className="flex-1 mb-0"
           >
-            <Select mode="multiple" options={tagOptions} placeholder="选择文章标签" allowClear/>
+            <Select mode="multiple" options={tagOptions} placeholder="选择文章标签" dropdownRender={(menu) => (
+              <>
+                {menu}
+                <Divider style={{margin: '8px 0'}}/>
+                <Space style={{padding: '0 8px 4px'}}>
+                  <Input
+                    placeholder="输入新增标签"
+                    ref={inputRef}
+                    value={name}
+                    onChange={onNameChange}
+                    onKeyDown={(e) => e.stopPropagation()}
+                  />
+                  <Button type="text" icon={<PlusOutlined/>} onClick={addItem}>
+                    添加
+                  </Button>
+                </Space>
+              </>
+            )}/>
           </Form.Item>
           <div className="w-1/6 mb-0 flex justify-end">
             <Space size="middle">
